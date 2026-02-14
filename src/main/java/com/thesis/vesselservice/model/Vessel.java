@@ -1,14 +1,17 @@
 package com.thesis.vesselservice.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
+import lombok.*;
+import org.hibernate.annotations.SoftDelete;
+import org.hibernate.annotations.SoftDeleteType;
 
 @Entity
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@SoftDelete(strategy = SoftDeleteType.ACTIVE, columnName = "active")
 public class Vessel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,6 +25,6 @@ public class Vessel {
     private String type;
     @NotBlank
     private String flag;
-
-//    private boolean deleted = false;
+    @Column(updatable = false, insertable = false)
+    private boolean active;
 }
