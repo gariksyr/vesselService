@@ -22,8 +22,6 @@ public class VesselService {
     private final VesselRepository vesselRepository;
     private final ModelMapper modelMapper;
     @Transactional
-    /*TODO ебаная реанимация сущности учитывая что поле not insertable и not updatable
-    * TODO разобраться с ошибкой swagger */
     public VesselResponseDTO registerVessel(VesselRequestDTO vesselRequestDTO){
         Optional<Vessel> findVessel = vesselRepository.findVesselByIMO(vesselRequestDTO.getIMO());
         Vessel vessel;
@@ -37,8 +35,7 @@ public class VesselService {
                 throw new EntityAlreadyExistException();
             }
             else {
-                vessel.setActive(true);
-                vesselRepository.save(vessel);
+                vesselRepository.activateByImo(vessel.getIMO());
             }
         }
         return modelMapper.map(vessel, VesselResponseDTO.class);
