@@ -26,8 +26,18 @@ public class VesselController {
     }
     @GetMapping()
     public ResponseEntity<Page<VesselResponseDTO>> index(@RequestParam(name = "page", defaultValue = "0") int page,
-                                                         @RequestParam(name = "size", defaultValue = "10") int size){
-        return new ResponseEntity<>(vesselService.findAll(page, size), HttpStatus.OK);
+                                                         @RequestParam(name = "size", defaultValue = "10") int size,
+                                                         @RequestParam(name = "type", required = false) String type,
+                                                         @RequestParam(name = "name", required = false) String name){
+        if (type != null && name != null){
+            return ResponseEntity.ok(vesselService.findAllByTypeAndName(page, size, type, name));
+        } else if (name != null) {
+            return ResponseEntity.ok(vesselService.findAllByName(page, size, name));
+        }
+        else if (type != null) {
+            return ResponseEntity.ok(vesselService.findAllByType(page, size, type));
+        }
+        return ResponseEntity.ok(vesselService.findAll(page, size));
     }
     @PatchMapping()
     public ResponseEntity<VesselResponseDTO> updateVessel(@RequestParam Long id, @RequestBody @Valid VesselRequestDTO dto){
