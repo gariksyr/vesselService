@@ -22,10 +22,9 @@ public class VesselService {
     private final VesselRepository vesselRepository;
     private final ModelMapper modelMapper;
     @Transactional
-    //TODO есть вопросики по поводу восстановления данных если они отличные от тех что в бд: что восстанавливать старые, или изменять на отправленные
     public VesselResponseDTO registerVessel(VesselRequestDTO vesselRequestDTO){
         Optional<Vessel> findVessel = vesselRepository.findVesselByIMO(vesselRequestDTO.getIMO());
-       // Vessel newVessel = modelMapper.map(vesselRequestDTO, Vessel.class);
+        Vessel newVessel = modelMapper.map(vesselRequestDTO, Vessel.class);
         Vessel vessel;
         if (findVessel.isEmpty()){
             vessel = modelMapper.map(vesselRequestDTO, Vessel.class);
@@ -37,10 +36,10 @@ public class VesselService {
                 throw new EntityAlreadyExistException();
             }
             else {
+                Long id = vessel.getId();
+                modelMapper.map(newVessel, vessel);
+                vessel.setId(id);
                 vesselRepository.activateByImo(vessel.getIMO());
-//                Vessel oldVessel = vesselRepository.findVesselByIMO(vessel.getIMO()).orElseThrow(EntityNotFoundException::new);
-//                modelMapper.map(newVessel, oldVessel);
-//                vesselRepository.save(oldVessel);
             }
         }
         return modelMapper.map(vessel, VesselResponseDTO.class);

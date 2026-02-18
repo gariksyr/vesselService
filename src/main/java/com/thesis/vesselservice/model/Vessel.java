@@ -17,7 +17,6 @@ public class Vessel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @NotBlank
-    //TODO проверка номера на целостность
     private String IMO;
     @NotBlank
     private String name;

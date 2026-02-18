@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -21,6 +22,11 @@ public class GlobalExceptionHandler{
     @ExceptionHandler(EntityAlreadyExistException.class)
     public ResponseEntity<ErrorResponse> handlerException(EntityAlreadyExistException e){
         ErrorResponse err = new ErrorResponse("that vessel already exists", System.currentTimeMillis());
+        return new ResponseEntity<>(err, HttpStatus.NOT_ACCEPTABLE);
+    }
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handlerException(MethodArgumentNotValidException e){
+        ErrorResponse err = new ErrorResponse("Invalid IMO", System.currentTimeMillis());
         return new ResponseEntity<>(err, HttpStatus.NOT_ACCEPTABLE);
     }
 }
