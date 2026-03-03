@@ -4,6 +4,7 @@ import com.thesis.vesselservice.dto.VesselRequestDTO;
 import com.thesis.vesselservice.dto.VesselResponseDTO;
 import com.thesis.vesselservice.exception.EntityAlreadyExistException;
 import com.thesis.vesselservice.exception.EntityNotFoundException;
+import com.thesis.vesselservice.kafka.VesselProducer;
 import com.thesis.vesselservice.model.Vessel;
 import com.thesis.vesselservice.repository.VesselRepository;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
@@ -21,6 +23,9 @@ import java.util.Optional;
 public class VesselService {
     private final VesselRepository vesselRepository;
     private final ModelMapper modelMapper;
+    private final KafkaTemplate<String, String> kafkaTemplate;
+    private final VesselProducer vesselProducer;
+
     @Transactional
     public VesselResponseDTO registerVessel(VesselRequestDTO vesselRequestDTO){
         Optional<Vessel> findVessel = vesselRepository.findVesselByIMO(vesselRequestDTO.getIMO());
@@ -42,6 +47,7 @@ public class VesselService {
                 vesselRepository.activateByImo(vessel.getIMO());
             }
         }
+        vesselProducer.sendVesselRegistered(vessel.getIMO());
         return modelMapper.map(vessel, VesselResponseDTO.class);
     }
     public VesselResponseDTO getVessel(String imo){
