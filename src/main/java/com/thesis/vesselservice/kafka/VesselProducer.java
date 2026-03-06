@@ -10,14 +10,6 @@ public class VesselProducer {
     private final KafkaTemplate<String, String> kafkaTemplate;
 
     public void sendVesselRegistered(String imo) {
-        kafkaTemplate.send("vessels-topic", imo).whenComplete((result, ex) -> {
-            if (ex == null) {
-                System.out.println("✅ УСПЕХ: Сообщение [" + imo + "] отправлено в Кафку! Offset: " +
-                        result.getRecordMetadata().offset());
-            } else {
-                System.err.println("❌ ОШИБКА: Не удалось отправить сообщение! Причина: " + ex.getMessage());
-                ex.printStackTrace();
-            }
-        });
+        kafkaTemplate.send("vessels-topic", imo);
     }
 }
