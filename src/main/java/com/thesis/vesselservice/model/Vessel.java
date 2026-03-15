@@ -2,6 +2,7 @@ package com.thesis.vesselservice.model;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.SoftDelete;
 import org.hibernate.annotations.SoftDeleteType;
@@ -24,6 +25,7 @@ public class Vessel {
     private String type;
     @NotBlank
     private String flag;
+    @NotNull
     @Column(updatable = false, insertable = false)
     private boolean active;
 }
