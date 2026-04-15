@@ -12,4 +12,7 @@ public class VesselProducer {
     public void sendVesselRegistered(String imo) {
         kafkaTemplate.send("vessels-topic", imo);
     }
+    public void sendVesselDeleted(String imo) {
+        kafkaTemplate.send("vessels-deletion", imo);
+    }
 }

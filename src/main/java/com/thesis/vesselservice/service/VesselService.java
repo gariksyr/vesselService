@@ -12,7 +12,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
@@ -23,7 +22,6 @@ import java.util.Optional;
 public class VesselService {
     private final VesselRepository vesselRepository;
     private final ModelMapper modelMapper;
-    private final KafkaTemplate<String, String> kafkaTemplate;
     private final VesselProducer vesselProducer;
 
     @Transactional
@@ -92,5 +90,6 @@ public class VesselService {
     public void deleteVessel(Long id){
         Vessel vessel = vesselRepository.findVesselById(id).orElseThrow(EntityNotFoundException::new);
         vesselRepository.delete(vessel);
+        vesselProducer.sendVesselDeleted(vessel.getIMO());
     }
 }
